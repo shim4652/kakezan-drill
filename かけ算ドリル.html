@@ -745,11 +745,16 @@
         const AudioContextClass = window.AudioContext || window.webkitAudioContext;
         audioCtx = new AudioContextClass();
 
-        // iOSのSafariはユーザー操作の直後にresume()を呼ばないと
-        // AudioContextが"suspended"のままになり、音が出ないことがある
-        if (audioCtx.state === "suspended") {
-          audioCtx.resume();
+        // iOSではresume()が一度で成功しないことがあるため、
+        // 実際に"running"になるまで自動で再試行し続ける
+        function watchAudioResume() {
+          if (!audioCtx || audioCtx.state === "running") {
+            return;
+          }
+          audioCtx.resume().catch(() => {});
+          setTimeout(watchAudioResume, 250);
         }
+        watchAudioResume();
 
         // 無音バッファを一度再生してオーディオ経路を確実に開放する（iOS対策）
         const unlockBuffer = audioCtx.createBuffer(1, 1, 22050);

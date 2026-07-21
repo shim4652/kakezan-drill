@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>かけ算れんしゅうアプリ</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background-color: #fff8e7;
+      background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22220%22%20height%3D%22220%22%3E%0A%20%20%3Ccircle%20cx%3D%2230%22%20cy%3D%2235%22%20r%3D%2212%22%20fill%3D%22%23ffe3b0%22%20opacity%3D%220.55%22/%3E%0A%20%20%3Ccircle%20cx%3D%22185%22%20cy%3D%2260%22%20r%3D%229%22%20fill%3D%22%23c9e7ff%22%20opacity%3D%220.55%22/%3E%0A%20%20%3Ccircle%20cx%3D%2260%22%20cy%3D%22150%22%20r%3D%227%22%20fill%3D%22%23ffd6e8%22%20opacity%3D%220.5%22/%3E%0A%20%20%3Ccircle%20cx%3D%22150%22%20cy%3D%22180%22%20r%3D%2211%22%20fill%3D%22%23d8ffd6%22%20opacity%3D%220.5%22/%3E%0A%20%20%3Ctext%20x%3D%22130%22%20y%3D%2245%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2226%22%20font-weight%3D%22bold%22%20fill%3D%22%23ffd36e%22%20opacity%3D%220.55%22%3Ex%3C/text%3E%0A%20%20%3Ctext%20x%3D%2220%22%20y%3D%22120%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2220%22%20font-weight%3D%22bold%22%20fill%3D%22%23a9c7ff%22%20opacity%3D%220.5%22%3Ex%3C/text%3E%0A%20%20%3Cpath%20d%3D%22M100%2015%20L104%2024%20L114%2025%20L106.5%2031%20L109%2041%20L100%2035.5%20L91%2041%20L93.5%2031%20L86%2025%20L96%2024%20Z%22%20fill%3D%22%23ffefb0%22%20opacity%3D%220.6%22/%3E%0A%20%20%3Cpath%20d%3D%22M175%20130%20L178%20137%20L186%20138%20L180%20143%20L182%20151%20L175%20147%20L168%20151%20L170%20143%20L164%20138%20L172%20137%20Z%22%20fill%3D%22%23ffe0f0%22%20opacity%3D%220.55%22/%3E%0A%20%20%3Cellipse%20cx%3D%2245%22%20cy%3D%22195%22%20rx%3D%2220%22%20ry%3D%229%22%20fill%3D%22%23eaf4ff%22%20opacity%3D%220.65%22/%3E%0A%20%20%3Cellipse%20cx%3D%2258%22%20cy%3D%22188%22%20rx%3D%2214%22%20ry%3D%228%22%20fill%3D%22%23eaf4ff%22%20opacity%3D%220.65%22/%3E%0A%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 220px 220px;
+      color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100dvh;
+      box-sizing: border-box;
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    .app {
+      width: min(92vw, 460px);
+      background-color: #ffffff;
+      background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22200%22%20height%3D%22200%22%3E%0A%20%20%3Ccircle%20cx%3D%2228%22%20cy%3D%2234%22%20r%3D%2213%22%20fill%3D%22%23ffcf7a%22%20opacity%3D%220.55%22/%3E%0A%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%2255%22%20r%3D%2210%22%20fill%3D%22%238fc4ff%22%20opacity%3D%220.5%22/%3E%0A%20%20%3Ccircle%20cx%3D%2255%22%20cy%3D%22135%22%20r%3D%229%22%20fill%3D%22%23ffa9d1%22%20opacity%3D%220.5%22/%3E%0A%20%20%3Ccircle%20cx%3D%22135%22%20cy%3D%22165%22%20r%3D%2212%22%20fill%3D%22%238fe08f%22%20opacity%3D%220.5%22/%3E%0A%20%20%3Ctext%20x%3D%22118%22%20y%3D%2242%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2226%22%20font-weight%3D%22bold%22%20fill%3D%22%23ff9d1e%22%20opacity%3D%220.55%22%3Ex%3C/text%3E%0A%20%20%3Ctext%20x%3D%2214%22%20y%3D%22105%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22bold%22%20fill%3D%22%235b8fff%22%20opacity%3D%220.5%22%3Ex%3C/text%3E%0A%20%20%3Cpath%20d%3D%22M95%208%20L99%2018%20L110%2019%20L101%2026%20L104%2037%20L95%2030.5%20L86%2037%20L89%2026%20L80%2019%20L91%2018%20Z%22%20fill%3D%22%23ffd85c%22%20opacity%3D%220.6%22/%3E%0A%20%20%3Cpath%20d%3D%22M170%20118%20L173%20125%20L182%20126%20L175%20131%20L177%20140%20L170%20135%20L163%20140%20L165%20131%20L158%20126%20L167%20125%20Z%22%20fill%3D%22%23ff8fc0%22%20opacity%3D%220.55%22/%3E%0A%20%20%3Cellipse%20cx%3D%2238%22%20cy%3D%22176%22%20rx%3D%2219%22%20ry%3D%229%22%20fill%3D%22%23bfe3ff%22%20opacity%3D%220.6%22/%3E%0A%20%20%3Cellipse%20cx%3D%2252%22%20cy%3D%22169%22%20rx%3D%2213%22%20ry%3D%228%22%20fill%3D%22%23bfe3ff%22%20opacity%3D%220.6%22/%3E%0A%3C/svg%3E");
+      background-repeat: repeat;
+      background-size: 170px 170px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+      padding: clamp(14px, 4vw, 24px) clamp(14px, 4vw, 24px) clamp(18px, 5vw, 30px);
+      text-align: center;
+      border: 4px solid #ffd36e;
+      transition: background-color 0.4s ease-out;
+      position: relative;
+      max-height: calc(100dvh - 20px);
+      overflow-y: auto;
+      box-sizing: border-box;
+    }
+
+    .bgm-toggle {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 2px solid #ffd36e;
+      background: #fff3d6;
+      font-size: 18px;
+      padding: 0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: none;
+    }
+
+    .bgm-toggle:active {
+      background: #ffe6a8;
+    }
+
+    .credit {
+      text-align: right;
+      margin-top: 8px;
+      font-size: 11px;
+      color: #8a7a5a;
+      letter-spacing: 0.02em;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    h1 {
+      margin: 0 0 clamp(6px, 2vw, 12px);
+      font-size: clamp(20px, 5.5vw, 28px);
+      color: #ff8a00;
+    }
+
+    .level-area {
+      margin-bottom: clamp(8px, 2.5vw, 16px);
+      text-align: left;
+    }
+
+    .level-area label {
+      display: block;
+      font-size: clamp(13px, 3.5vw, 16px);
+      font-weight: bold;
+      margin-bottom: clamp(4px, 1.5vw, 8px);
+      color: #444;
+    }
+
+    select {
+      width: 100%;
+      box-sizing: border-box;
+      font-size: clamp(14px, 4vw, 18px);
+      padding: clamp(8px, 2.5vw, 12px);
+      border: 3px solid #cfd8ff;
+      border-radius: 14px;
+      outline: none;
+      background: #fff;
+    }
+
+    .score {
+      font-size: clamp(14px, 4vw, 18px);
+      margin-bottom: clamp(8px, 2.5vw, 16px);
+      color: #444;
+      font-weight: bold;
+    }
+
+    .problem {
+      font-size: clamp(26px, 8vw, 44px);
+      font-weight: bold;
+      margin: clamp(8px, 3vw, 18px) 0 clamp(10px, 3.5vw, 24px);
+      color: #2b4eff;
+      letter-spacing: 1px;
+    }
+
+    input {
+      width: 100%;
+      box-sizing: border-box;
+      font-size: clamp(18px, 5vw, 24px);
+      padding: clamp(8px, 3vw, 14px);
+      border: 3px solid #cfd8ff;
+      border-radius: 14px;
+      outline: none;
+      text-align: center;
+    }
+
+    input:focus {
+      border-color: #2b4eff;
+    }
+
+    .answer-row {
+      display: flex;
+      gap: clamp(8px, 2.5vw, 12px);
+      align-items: stretch;
+    }
+
+    .answer-row input {
+      flex: 2;
+      min-width: 0;
+    }
+
+    .answer-row .answer-btn {
+      flex: 1;
+      white-space: nowrap;
+    }
+
+    .next-btn {
+      flex: 0 0 auto;
+    }
+
+    .message-row {
+      display: flex;
+      align-items: center;
+      gap: clamp(8px, 2.5vw, 12px);
+      margin-top: clamp(8px, 2.5vw, 16px);
+    }
+
+    .message-row .message {
+      flex: 1;
+      margin-top: 0;
+      text-align: left;
+    }
+
+    .keypad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: clamp(6px, 2vw, 10px);
+      margin-top: clamp(8px, 2.5vw, 16px);
+    }
+
+    .key-btn {
+      border-radius: 14px;
+      font-size: clamp(18px, 5vw, 24px);
+      padding: clamp(9px, 3vw, 16px) 0;
+      cursor: pointer;
+      font-weight: bold;
+      background: #eef1ff;
+      color: #2b4eff;
+      border: 2px solid #cfd8ff;
+    }
+
+    .key-btn:active {
+      background: #dbe1ff;
+    }
+
+    .key-btn.clear-key {
+      background: #ffe3e3;
+      color: #d64545;
+      border-color: #ffc9c9;
+      font-size: 18px;
+    }
+
+    .key-btn.back-key {
+      background: #fff3d6;
+      color: #ff8a00;
+      border-color: #ffd36e;
+      font-size: 20px;
+    }
+
+    button {
+      flex: 1;
+      border: none;
+      border-radius: 14px;
+      font-size: 20px;
+      padding: 14px 12px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .answer-btn {
+      background: #4caf50;
+      color: white;
+    }
+
+    .next-btn {
+      background: #ff9800;
+      color: white;
+    }
+
+    button:hover {
+      opacity: 0.92;
+    }
+
+    .message {
+      margin-top: 20px;
+      min-height: clamp(28px, 8vw, 40px);
+      font-size: clamp(16px, 4.5vw, 22px);
+      font-weight: bold;
+    }
+
+    .correct {
+      color: #1b8f2f;
+    }
+
+    .wrong {
+      color: #d64545;
+    }
+
+    .small {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .star {
+      font-size: 28px;
+      display: inline-block;
+      margin-left: 6px;
+      animation: pop 0.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes pop {
+      from { transform: scale(1); }
+      to { transform: scale(1.18); }
+    }
+
+    .level-clear {
+      padding: 12px 0 4px;
+    }
+
+    .fanfare-emoji {
+      font-size: 56px;
+      animation: fanfareBounce 0.7s ease-in-out infinite alternate;
+    }
+
+    @keyframes fanfareBounce {
+      from { transform: scale(1) rotate(-4deg); }
+      to { transform: scale(1.15) rotate(4deg); }
+    }
+
+    .clear-title {
+      font-size: 26px;
+      font-weight: bold;
+      color: #ff8a00;
+      margin: 10px 0 6px;
+    }
+
+    .clear-sub {
+      font-size: 16px;
+      color: #444;
+      margin-bottom: 22px;
+    }
+
+    .clear-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .next-level-btn {
+      background: #4caf50;
+      color: white;
+    }
+
+    .stay-level-btn {
+      background: #2b4eff;
+      color: white;
+    }
+
+    .sugoroku {
+      margin: clamp(2px, 1vw, 4px) 0 clamp(8px, 2.5vw, 18px);
+    }
+
+    .sugoroku-track {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      position: relative;
+      padding-top: 14px;
+    }
+
+    .sg-start,
+    .sg-goal {
+      flex: 0 0 auto;
+      width: clamp(22px, 6vw, 30px);
+      height: clamp(22px, 6vw, 30px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(12px, 3.5vw, 16px);
+    }
+
+    .sg-cell {
+      flex: 1 1 0;
+      aspect-ratio: 1 / 1;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      color: white;
+      font-weight: bold;
+      box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+      transition: transform 0.25s ease;
+    }
+
+    .sg-num {
+      font-size: 10px;
+      opacity: 0.85;
+    }
+
+    .sg-piece {
+      position: absolute;
+      top: 0;
+      left: 0;
+      font-size: clamp(22px, 6.5vw, 30px);
+      transform: translate(-50%, -50%);
+      transition: left 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.45s ease;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .sg-piece .sg-piece-inner {
+      display: inline-block;
+      animation: sgWalk 0.45s ease-in-out infinite alternate;
+    }
+
+    @keyframes sgWalk {
+      0% { transform: rotate(-12deg) translateY(0); }
+      50% { transform: rotate(0deg) translateY(-4px); }
+      100% { transform: rotate(12deg) translateY(0); }
+    }
+
+    .sg-cell.sg-passed {
+      opacity: 0.55;
+    }
+
+    .sg-cell.sg-current {
+      transform: scale(1.55);
+      box-shadow: 0 0 0 2px #fff, inset 0 -2px 0 rgba(0, 0, 0, 0.12);
+      z-index: 2;
+    }
+
+    .sg-goal.sg-reached {
+      animation: sgHop 0.5s ease;
+    }
+
+    @keyframes sgHop {
+      0% { transform: translateY(-14px) scale(0.8); }
+      60% { transform: translateY(2px) scale(1.1); }
+      100% { transform: translateY(-2px) scale(1); }
+    }
+
+    .sg-cell[data-index="1"], .sg-cell[data-index="6"] { background: #ff9d6c; }
+    .sg-cell[data-index="2"], .sg-cell[data-index="7"] { background: #ffc94d; }
+    .sg-cell[data-index="3"], .sg-cell[data-index="8"] { background: #7bd47a; }
+    .sg-cell[data-index="4"], .sg-cell[data-index="9"] { background: #6fc3ff; }
+    .sg-cell[data-index="5"], .sg-cell[data-index="10"] { background: #b696ff; }
+  </style>
+</head>
+<body>
+  <div class="app" id="appCard">
+    <button class="bgm-toggle" id="bgmToggle" aria-label="BGMのオンオフ" type="button">🎵</button>
+    <h1>かけ算れんしゅう</h1>
+
+    <div class="level-area">
+      <label for="level">レベルをえらんでね</label>
+      <select id="level">
+        <option value="easy">かんたん（2〜5のだん）</option>
+        <option value="normal" selected>ふつう（2〜7のだん）</option>
+        <option value="hard">むずかしい（2〜9のだん）</option>
+      </select>
+    </div>
+
+    <div class="score">スコア: <span id="score">0</span></div>
+
+    <div class="sugoroku">
+      <div class="sugoroku-track" id="sugorokuTrack">
+        <div class="sg-start" id="sgStart">🚩</div>
+        <div class="sg-cell" data-index="1"><span class="sg-num">1</span></div>
+        <div class="sg-cell" data-index="2"><span class="sg-num">2</span></div>
+        <div class="sg-cell" data-index="3"><span class="sg-num">3</span></div>
+        <div class="sg-cell" data-index="4"><span class="sg-num">4</span></div>
+        <div class="sg-cell" data-index="5"><span class="sg-num">5</span></div>
+        <div class="sg-cell" data-index="6"><span class="sg-num">6</span></div>
+        <div class="sg-cell" data-index="7"><span class="sg-num">7</span></div>
+        <div class="sg-cell" data-index="8"><span class="sg-num">8</span></div>
+        <div class="sg-cell" data-index="9"><span class="sg-num">9</span></div>
+        <div class="sg-cell" data-index="10"><span class="sg-num">10</span></div>
+        <div class="sg-goal" id="sgGoal">🏁</div>
+        <div class="sg-piece" id="sgPiece"><span class="sg-piece-inner">🐰</span></div>
+      </div>
+    </div>
+
+    <div id="quizArea">
+      <div class="problem" id="problem">3 × 4 = ?</div>
+
+      <div class="answer-row">
+        <input
+          type="text"
+          id="answer"
+          placeholder="こたえをいれてね"
+          inputmode="none"
+          readonly
+        />
+        <button class="answer-btn" id="checkBtn">こたえる</button>
+      </div>
+
+      <div class="message-row">
+        <div class="message" id="message"></div>
+        <button class="next-btn" id="nextBtn">つぎのもんだい</button>
+      </div>
+
+      <div class="keypad" id="keypad">
+        <button class="key-btn" data-num="7">7</button>
+        <button class="key-btn" data-num="8">8</button>
+        <button class="key-btn" data-num="9">9</button>
+        <button class="key-btn" data-num="4">4</button>
+        <button class="key-btn" data-num="5">5</button>
+        <button class="key-btn" data-num="6">6</button>
+        <button class="key-btn" data-num="1">1</button>
+        <button class="key-btn" data-num="2">2</button>
+        <button class="key-btn" data-num="3">3</button>
+        <button class="key-btn clear-key" id="clearKey">クリア</button>
+        <button class="key-btn" data-num="0">0</button>
+        <button class="key-btn back-key" id="backKey">⌫</button>
+      </div>
+    </div>
+
+    <div class="level-clear hidden" id="levelClearPanel">
+      <div class="fanfare-emoji">🎉🎊🥳</div>
+      <div class="clear-title" id="clearTitle">ぜんもんせいかい！</div>
+      <div class="clear-sub" id="clearSub">レベルクリア、おめでとう！</div>
+      <div class="clear-buttons">
+        <button class="next-level-btn" id="nextLevelBtn">つぎのレベルへ</button>
+        <button class="stay-level-btn" id="stayLevelBtn">このレベルをもう一度</button>
+      </div>
+    </div>
+
+    <div class="small" id="hint">レベルにあわせて問題がでます</div>
+
+    <div class="credit">Produced by Shimofuri</div>
+  </div>
+
+  <script>
+    const appCard = document.getElementById("appCard");
+    const quizArea = document.getElementById("quizArea");
+    const problemEl = document.getElementById("problem");
+    const answerEl = document.getElementById("answer");
+    const messageEl = document.getElementById("message");
+    const scoreEl = document.getElementById("score");
+    const checkBtn = document.getElementById("checkBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const levelEl = document.getElementById("level");
+    const hintEl = document.getElementById("hint");
+    const levelClearPanel = document.getElementById("levelClearPanel");
+    const clearTitleEl = document.getElementById("clearTitle");
+    const clearSubEl = document.getElementById("clearSub");
+    const nextLevelBtn = document.getElementById("nextLevelBtn");
+    const stayLevelBtn = document.getElementById("stayLevelBtn");
+
+    const bgmToggleBtn = document.getElementById("bgmToggle");
+
+    // J.S.バッハ「平均律クラヴィーア曲集 第1巻」プレリュード第1番 ハ長調 BWV846
+    // 標準MIDIファイル（Standard MIDI File, Format 1）をBase64で埋め込み、
+    // JS内の簡易MIDIパーサーで読み込んで再生する
+    const BGM_MIDI_BASE64 =
+      "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";
+
+    const BGM_VOLUME = 0.05;
+    const BGM_TEMPO_SCALE = 1.4; // 1より大きいほどゆっくり再生
+    const BGM_LOOP_GAP_SEC = 3; // 繰り返しまでの無音時間
+
+    let audioCtx = null;
+    let masterGain = null;
+    let compressorNode = null;
+    let bgmMuted = false;
+    let bgmStarted = false;
+    let bgmNotes = null;   // [{ time, dur, midi }, ...] 秒単位・ソート済み
+    let bgmLoopDurationSec = 0;
+
+    function base64ToBytes(base64) {
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return bytes;
+    }
+
+    function readVarLen(bytes, pos) {
+      let value = 0;
+      let b;
+      do {
+        b = bytes[pos.i++];
+        value = (value << 7) | (b & 0x7f);
+      } while (b & 0x80);
+      return value;
+    }
+
+    // 標準MIDIファイル(Format 0/1)をパースし、{tick, durTicks, midi}のノート列と
+    // テンポ変化イベントを取り出す簡易MIDIパーサー
+    function parseMidi(bytes) {
+      const pos = { i: 0 };
+      const view = new DataView(bytes.buffer);
+
+      const headerId = String.fromCharCode(...bytes.slice(0, 4));
+      if (headerId !== "MThd") throw new Error("invalid midi file");
+      const headerLen = view.getUint32(4);
+      const ntrks = view.getUint16(10);
+      const division = view.getUint16(12);
+      const ticksPerQuarter = division & 0x8000 ? 480 : division;
+      pos.i = 8 + headerLen;
+
+      const noteEvents = [];
+      const tempoEvents = [{ tick: 0, mpq: 500000 }];
+
+      for (let t = 0; t < ntrks; t++) {
+        pos.i += 4; // 'MTrk'
+        const chunkLen = view.getUint32(pos.i);
+        pos.i += 4;
+        const trackEnd = pos.i + chunkLen;
+
+        let currentTick = 0;
+        let runningStatus = null;
+        const activeNotes = {};
+
+        while (pos.i < trackEnd) {
+          currentTick += readVarLen(bytes, pos);
+
+          let statusByte = bytes[pos.i];
+          if (statusByte & 0x80) {
+            runningStatus = statusByte;
+            pos.i++;
+          } else {
+            statusByte = runningStatus;
+          }
+
+          const type = statusByte & 0xf0;
+          const channel = statusByte & 0x0f;
+
+          if (statusByte === 0xff) {
+            const metaType = bytes[pos.i++];
+            const len = readVarLen(bytes, pos);
+            if (metaType === 0x51) {
+              const mpq = (bytes[pos.i] << 16) | (bytes[pos.i + 1] << 8) | bytes[pos.i + 2];
+              tempoEvents.push({ tick: currentTick, mpq });
+            }
+            pos.i += len;
+          } else if (statusByte === 0xf0 || statusByte === 0xf7) {
+            const len = readVarLen(bytes, pos);
+            pos.i += len;
+          } else if (type === 0x90 || type === 0x80) {
+            const note = bytes[pos.i++];
+            const vel = bytes[pos.i++];
+            const key = channel * 128 + note;
+            if (type === 0x90 && vel > 0) {
+              if (!activeNotes[key]) activeNotes[key] = [];
+              activeNotes[key].push(currentTick);
+            } else if (activeNotes[key] && activeNotes[key].length) {
+              const onTick = activeNotes[key].shift();
+              noteEvents.push({ tick: onTick, durTicks: currentTick - onTick, midi: note });
+            }
+          } else if (type === 0xa0 || type === 0xb0 || type === 0xe0) {
+            pos.i += 2;
+          } else if (type === 0xc0 || type === 0xd0) {
+            pos.i += 1;
+          } else {
+            pos.i += 1;
+          }
+        }
+        pos.i = trackEnd;
+      }
+
+      return { ticksPerQuarter, noteEvents, tempoEvents };
+    }
+
+    // テンポ変化を考慮して tick を秒に変換する関数を作る
+    function buildTickToSeconds(tempoEvents, ticksPerQuarter) {
+      const sorted = [...tempoEvents].sort((a, b) => a.tick - b.tick);
+      const segments = [];
+      let accSec = 0;
+      for (let i = 0; i < sorted.length; i++) {
+        const startTick = sorted[i].tick;
+        const mpq = sorted[i].mpq;
+        const endTick = i + 1 < sorted.length ? sorted[i + 1].tick : Infinity;
+        segments.push({ startTick, endTick, mpq, startSec: accSec });
+        if (endTick !== Infinity) {
+          accSec += ((endTick - startTick) / ticksPerQuarter) * (mpq / 1000000);
+        }
+      }
+      return function tickToSeconds(tick) {
+        let seg = segments[0];
+        for (const s of segments) {
+          if (tick >= s.startTick) seg = s;
+          else break;
+        }
+        return seg.startSec + ((tick - seg.startTick) / ticksPerQuarter) * (seg.mpq / 1000000);
+      };
+    }
+
+    function noteAudibleEnd(startSec, durSec) {
+      const attack = 0.006;
+      const release = Math.min(Math.max(durSec * 0.9, 0.12), 1.1);
+      return startSec + attack + release + 0.05;
+    }
+
+    function loadBgmFromMidi() {
+      const bytes = base64ToBytes(BGM_MIDI_BASE64);
+      const { ticksPerQuarter, noteEvents, tempoEvents } = parseMidi(bytes);
+      const tickToSeconds = buildTickToSeconds(tempoEvents, ticksPerQuarter);
+
+      const notes = noteEvents
+        .map((n) => ({
+          time: tickToSeconds(n.tick) * BGM_TEMPO_SCALE,
+          dur: (tickToSeconds(n.tick + n.durTicks) - tickToSeconds(n.tick)) * BGM_TEMPO_SCALE,
+          midi: n.midi,
+        }))
+        .sort((a, b) => a.time - b.time);
+
+      // 実際に音が鳴り終わる時刻（エンベロープの上限を考慮）を基準にループ長を決める
+      bgmLoopDurationSec = Math.max(
+        ...notes.map((n) => noteAudibleEnd(n.time, n.dur))
+      );
+      bgmNotes = notes;
+    }
+
+    function midiToFreq(midi) {
+      return 440 * Math.pow(2, (midi - 69) / 12);
+    }
+
+    function playBgmNote(startTime, durationSec, midi) {
+      const freq = midiToFreq(midi);
+
+      const osc = audioCtx.createOscillator();
+      osc.type = "triangle";
+      osc.frequency.value = freq;
+
+      const shimmer = audioCtx.createOscillator();
+      shimmer.type = "sine";
+      shimmer.frequency.value = freq * 2;
+      const shimmerGain = audioCtx.createGain();
+      shimmerGain.gain.value = 0.12;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.value = 3200;
+
+      const env = audioCtx.createGain();
+      const attack = 0.006;
+      const release = Math.min(Math.max(durationSec * 0.9, 0.12), 1.1);
+      env.gain.setValueAtTime(0.0001, startTime);
+      env.gain.linearRampToValueAtTime(1, startTime + attack);
+      env.gain.exponentialRampToValueAtTime(0.0001, startTime + attack + release);
+
+      osc.connect(filter);
+      shimmer.connect(shimmerGain).connect(filter);
+      filter.connect(env).connect(masterGain);
+
+      const stopTime = startTime + attack + release + 0.05;
+      osc.start(startTime);
+      osc.stop(stopTime);
+      shimmer.start(startTime);
+      shimmer.stop(stopTime);
+    }
+
+    function scheduleBgmLoop(startTime) {
+      bgmNotes.forEach((n) => {
+        playBgmNote(startTime + n.time, n.dur, n.midi);
+      });
+
+      const nextStart = startTime + bgmLoopDurationSec + BGM_LOOP_GAP_SEC;
+      const rescheduleDelayMs = Math.max((bgmLoopDurationSec + BGM_LOOP_GAP_SEC - 2) * 1000, 1000);
+      setTimeout(() => scheduleBgmLoop(nextStart), rescheduleDelayMs);
+    }
+
+    function ensureBgmStarted() {
+      if (bgmStarted) return;
+      bgmStarted = true;
+
+      if (!bgmNotes) loadBgmFromMidi();
+
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AudioContextClass();
+
+      // iOSのSafariはユーザー操作の直後にresume()を呼ばないと
+      // AudioContextが"suspended"のままになり、音が出ないことがある
+      if (audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+
+      // 無音バッファを一度再生してオーディオ経路を確実に開放する（iOS対策）
+      const unlockBuffer = audioCtx.createBuffer(1, 1, 22050);
+      const unlockSource = audioCtx.createBufferSource();
+      unlockSource.buffer = unlockBuffer;
+      unlockSource.connect(audioCtx.destination);
+      unlockSource.start(0);
+
+      const compressor = audioCtx.createDynamicsCompressor();
+      compressor.threshold.value = -24;
+      compressor.knee.value = 24;
+      compressor.ratio.value = 8;
+      compressor.attack.value = 0.003;
+      compressor.release.value = 0.25;
+      compressor.connect(audioCtx.destination);
+      compressorNode = compressor;
+
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = bgmMuted ? 0 : BGM_VOLUME;
+      masterGain.connect(compressor);
+
+      scheduleBgmLoop(audioCtx.currentTime + 0.15);
+    }
+
+    function resumeAudioIfNeeded() {
+      if (audioCtx && audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+    }
+
+    function playFanfareNote(startTime, durationSec, midi, peakGain, slideFromMidi) {
+      const freq = midiToFreq(midi);
+      const startFreq = slideFromMidi ? midiToFreq(slideFromMidi) : freq;
+
+      const osc = audioCtx.createOscillator();
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(startFreq, startTime);
+      if (slideFromMidi) {
+        osc.frequency.exponentialRampToValueAtTime(freq, startTime + 0.07);
+      }
+
+      const osc2 = audioCtx.createOscillator();
+      osc2.type = "square";
+      osc2.frequency.setValueAtTime(startFreq, startTime);
+      if (slideFromMidi) {
+        osc2.frequency.exponentialRampToValueAtTime(freq, startTime + 0.07);
+      }
+      const osc2Gain = audioCtx.createGain();
+      osc2Gain.gain.value = 0.25;
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.value = 4500;
+
+      const env = audioCtx.createGain();
+      const attack = 0.01;
+      env.gain.setValueAtTime(0.0001, startTime);
+      env.gain.linearRampToValueAtTime(peakGain, startTime + attack);
+      env.gain.exponentialRampToValueAtTime(0.0001, startTime + attack + durationSec);
+
+      osc.connect(filter);
+      osc2.connect(osc2Gain).connect(filter);
+      filter.connect(env).connect(compressorNode || audioCtx.destination);
+
+      const stopTime = startTime + attack + durationSec + 0.05;
+      osc.start(startTime);
+      osc.stop(stopTime);
+      osc2.start(startTime);
+      osc2.stop(stopTime);
+    }
+
+    function playFanfare() {
+      ensureBgmStarted();
+      if (!audioCtx || bgmMuted) return;
+
+      const startTime = audioCtx.currentTime + 0.05;
+
+      // 「パン・パら・パン・パン・パーン」= 5音のリズム
+      playFanfareNote(startTime + 0.0, 0.2, 72, 0.35); // パン (C5)
+      playFanfareNote(startTime + 0.2, 0.2, 74, 0.35, 69); // パら (A4から素早くD5へすべり上がる)
+      playFanfareNote(startTime + 0.4, 0.2, 79, 0.35); // パン (G5)
+      playFanfareNote(startTime + 0.6, 0.2, 79, 0.35); // パン (G5)
+
+      const finalStart = startTime + 0.8;
+      [72, 76, 79, 84].forEach((midi) => {
+        playFanfareNote(finalStart, 1.6, midi, 0.3); // パーン (和音で長く伸ばす)
+      });
+    }
+
+    function toggleBgm() {
+      ensureBgmStarted();
+      if (audioCtx && audioCtx.state === "suspended") {
+        audioCtx.resume();
+      }
+      bgmMuted = !bgmMuted;
+      if (masterGain) {
+        masterGain.gain.setTargetAtTime(bgmMuted ? 0 : BGM_VOLUME, audioCtx.currentTime, 0.05);
+      }
+      bgmToggleBtn.textContent = bgmMuted ? "🔇" : "🎵";
+    }
+
+    bgmToggleBtn.addEventListener("click", (event) => {
+      event.stopPropagation();
+      toggleBgm();
+    });
+
+    ["touchstart", "touchend", "pointerdown", "mousedown"].forEach((eventName) => {
+      document.addEventListener(eventName, ensureBgmStarted, { once: true, passive: true });
+    });
+
+
+    const LEVELS = ["easy", "normal", "hard"];
+    const BOARD_GOAL = 10;
+    const TIME_LIMIT_MS = 15000;
+    const DANGER_START_MS = 5000;
+    const NORMAL_BG = "#ffffff";
+    const DANGER_BG = "#ff4d4d";
+
+    let a = 0;
+    let b = 0;
+    let score = 0;
+    let answered = false;
+    let boardPosition = 0;
+    let timerInterval = null;
+    let problemStartTime = 0;
+
+    const sgTrackEl = document.getElementById("sugorokuTrack");
+    const sgStartEl = document.getElementById("sgStart");
+    const sgGoalEl = document.getElementById("sgGoal");
+    const sgCellEls = Array.from(document.querySelectorAll(".sg-cell"));
+    const sgPieceEl = document.getElementById("sgPiece");
+
+    function getLevelRange() {
+      const level = levelEl.value;
+
+      if (level === "easy") {
+        return { min: 2, max: 5, label: "かんたん（2〜5のだん）" };
+      }
+      if (level === "hard") {
+        return { min: 2, max: 9, label: "むずかしい（2〜9のだん）" };
+      }
+      return { min: 2, max: 7, label: "ふつう（2〜7のだん）" };
+    }
+
+    function lerpColor(fromHex, toHex, t) {
+      const f = parseInt(fromHex.slice(1), 16);
+      const to = parseInt(toHex.slice(1), 16);
+      const fr = (f >> 16) & 0xff, fg = (f >> 8) & 0xff, fb = f & 0xff;
+      const tr = (to >> 16) & 0xff, tg = (to >> 8) & 0xff, tb = to & 0xff;
+      const r = Math.round(fr + (tr - fr) * t);
+      const g = Math.round(fg + (tg - fg) * t);
+      const bl = Math.round(fb + (tb - fb) * t);
+      return `rgb(${r}, ${g}, ${bl})`;
+    }
+
+    function resetBackground() {
+      appCard.style.backgroundColor = NORMAL_BG;
+    }
+
+    function stopTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    function startTimer() {
+      stopTimer();
+      resetBackground();
+      problemStartTime = Date.now();
+      timerInterval = setInterval(updateTimer, 100);
+    }
+
+    function updateTimer() {
+      const elapsed = Date.now() - problemStartTime;
+
+      if (elapsed >= DANGER_START_MS) {
+        const ratio = Math.min(
+          (elapsed - DANGER_START_MS) / (TIME_LIMIT_MS - DANGER_START_MS),
+          1
+        );
+        const easedRatio = ratio * ratio;
+        appCard.style.backgroundColor = lerpColor(NORMAL_BG, DANGER_BG, easedRatio);
+      }
+
+      if (elapsed >= TIME_LIMIT_MS) {
+        stopTimer();
+        handleTimeout();
+      }
+    }
+
+    function updateHint() {
+      const range = getLevelRange();
+      hintEl.textContent = `いまのレベル: ${range.label}`;
+    }
+
+    function positionPiece() {
+      const trackRect = sgTrackEl.getBoundingClientRect();
+      let targetEl;
+      if (boardPosition <= 0) {
+        targetEl = sgStartEl;
+      } else if (boardPosition >= BOARD_GOAL) {
+        targetEl = sgGoalEl;
+      } else {
+        targetEl = sgCellEls[boardPosition - 1];
+      }
+      const targetRect = targetEl.getBoundingClientRect();
+      const left = targetRect.left - trackRect.left + targetRect.width / 2;
+      const top = targetRect.top - trackRect.top + targetRect.height / 2;
+      sgPieceEl.style.left = `${left}px`;
+      sgPieceEl.style.top = `${top}px`;
+    }
+
+    function renderBoard() {
+      sgCellEls.forEach((cell) => {
+        const idx = Number(cell.dataset.index);
+        cell.classList.toggle("sg-passed", idx < boardPosition);
+        cell.classList.toggle("sg-current", idx === boardPosition);
+      });
+
+      sgGoalEl.textContent = boardPosition >= BOARD_GOAL ? "🏁🎉" : "🏁";
+      sgGoalEl.classList.toggle("sg-reached", boardPosition >= BOARD_GOAL);
+
+      positionPiece();
+    }
+
+    window.addEventListener("resize", () => {
+      sgPieceEl.style.transition = "none";
+      positionPiece();
+      requestAnimationFrame(() => {
+        sgPieceEl.style.transition = "";
+      });
+    });
+
+    function makeProblem() {
+      const range = getLevelRange();
+      a = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+      b = Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
+
+      problemEl.textContent = `${a} × ${b} = ?`;
+      answerEl.value = "";
+      messageEl.textContent = "";
+      messageEl.className = "message";
+      updateHint();
+      answered = false;
+      startTimer();
+    }
+
+    function resetRound() {
+      boardPosition = 0;
+      renderBoard();
+      nextBtn.disabled = false;
+    }
+
+    function advanceBoard(isCorrect) {
+      if (isCorrect) {
+        boardPosition = Math.min(boardPosition + 1, BOARD_GOAL);
+        renderBoard();
+        if (boardPosition >= BOARD_GOAL) {
+          nextBtn.disabled = true;
+          setTimeout(showLevelClear, 900);
+        }
+      } else {
+        boardPosition = 0;
+        renderBoard();
+      }
+    }
+
+    function checkAnswer() {
+      if (answered) {
+        return;
+      }
+
+      if (answerEl.value === "") {
+        messageEl.textContent = "こたえをいれてね";
+        messageEl.className = "message wrong";
+        return;
+      }
+
+      const userAnswer = Number(answerEl.value);
+      stopTimer();
+      resetBackground();
+      answered = true;
+
+      if (userAnswer === a * b) {
+        score += 1;
+        scoreEl.textContent = score;
+        messageEl.innerHTML = `せいかい！ すごいね！ <span class="star">⭐</span>`;
+        messageEl.className = "message correct";
+        advanceBoard(true);
+      } else {
+        messageEl.textContent = `おしい！ こたえは ${a * b} だよ（スタートにもどるよ）`;
+        messageEl.className = "message wrong";
+        advanceBoard(false);
+      }
+    }
+
+    function handleTimeout() {
+      if (answered) {
+        return;
+      }
+
+      answered = true;
+      resetBackground();
+      messageEl.textContent = `じかんぎれ！ こたえは ${a * b} だよ（スタートにもどるよ）`;
+      messageEl.className = "message wrong";
+      advanceBoard(false);
+    }
+
+    function showLevelClear() {
+      stopTimer();
+      resetBackground();
+      quizArea.classList.add("hidden");
+      hintEl.classList.add("hidden");
+      levelClearPanel.classList.remove("hidden");
+      playFanfare();
+
+      const idx = LEVELS.indexOf(levelEl.value);
+      const hasNext = idx < LEVELS.length - 1;
+
+      if (hasNext) {
+        clearTitleEl.textContent = "ぜんもんせいかい！ゴール！";
+        clearSubEl.textContent = "つぎのレベルにチャレンジしよう！";
+        nextLevelBtn.classList.remove("hidden");
+        nextLevelBtn.textContent = "つぎのレベルへ";
+      } else {
+        clearTitleEl.textContent = "さいきょうレベルでゴール！";
+        clearSubEl.textContent = "きみはかけ算マスターだ！";
+        nextLevelBtn.classList.add("hidden");
+      }
+    }
+
+    function hideLevelClear() {
+      levelClearPanel.classList.add("hidden");
+      quizArea.classList.remove("hidden");
+      hintEl.classList.remove("hidden");
+    }
+
+    answerEl.addEventListener("touchstart", () => {
+      ensureBgmStarted();
+      resumeAudioIfNeeded();
+    }, { passive: true });
+
+    answerEl.addEventListener("click", () => {
+      ensureBgmStarted();
+      resumeAudioIfNeeded();
+    });
+
+    checkBtn.addEventListener("click", () => {
+      ensureBgmStarted();
+      resumeAudioIfNeeded();
+      checkAnswer();
+    });
+
+    nextBtn.addEventListener("click", () => {
+      ensureBgmStarted();
+      resumeAudioIfNeeded();
+      makeProblem();
+    });
+
+    levelEl.addEventListener("change", () => {
+      resetRound();
+      makeProblem();
+    });
+
+    nextLevelBtn.addEventListener("click", () => {
+      ensureBgmStarted();
+      resumeAudioIfNeeded();
+      const idx = LEVELS.indexOf(levelEl.value);
+      if (idx < LEVELS.length - 1) {
+        levelEl.value = LEVELS[idx + 1];
+      }
+      hideLevelClear();
+      resetRound();
+      makeProblem();
+    });
+
+    stayLevelBtn.addEventListener("click", () => {
+      ensureBgmStarted();
+      resumeAudioIfNeeded();
+      hideLevelClear();
+      resetRound();
+      makeProblem();
+    });
+
+    const keypadEl = document.getElementById("keypad");
+    const clearKey = document.getElementById("clearKey");
+    const backKey = document.getElementById("backKey");
+
+    keypadEl.addEventListener("click", (event) => {
+      ensureBgmStarted();
+      resumeAudioIfNeeded();
+      const btn = event.target.closest(".key-btn[data-num]");
+      if (!btn || answered) return;
+      if (answerEl.value.length >= 3) return;
+      answerEl.value += btn.dataset.num;
+    });
+
+    clearKey.addEventListener("click", () => {
+      ensureBgmStarted();
+      resumeAudioIfNeeded();
+      if (answered) return;
+      answerEl.value = "";
+    });
+
+    backKey.addEventListener("click", () => {
+      ensureBgmStarted();
+      resumeAudioIfNeeded();
+      if (answered) return;
+      answerEl.value = answerEl.value.slice(0, -1);
+    });
+
+    sgPieceEl.style.transition = "none";
+    renderBoard();
+    requestAnimationFrame(() => {
+      sgPieceEl.style.transition = "";
+    });
+    makeProblem();
+  </script>
+</body>
+</html>

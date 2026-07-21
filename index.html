@@ -700,52 +700,83 @@
       shimmer.stop(stopTime);
     }
 
-    function scheduleBgmLoop(startTime) {
-      bgmNotes.forEach((n) => {
-        playBgmNote(startTime + n.time, n.dur, n.midi);
-      });
+    let schedulerTimer = null;
+    let nextNoteIndex = 0;
+    let loopBaseTime = 0;
+    const SCHEDULE_AHEAD_SEC = 0.4;
+    const SCHEDULER_INTERVAL_MS = 100;
 
-      const nextStart = startTime + bgmLoopDurationSec + BGM_LOOP_GAP_SEC;
-      const rescheduleDelayMs = Math.max((bgmLoopDurationSec + BGM_LOOP_GAP_SEC - 2) * 1000, 1000);
-      setTimeout(() => scheduleBgmLoop(nextStart), rescheduleDelayMs);
+    function schedulerTick() {
+      const horizon = audioCtx.currentTime + SCHEDULE_AHEAD_SEC;
+
+      while (
+        nextNoteIndex < bgmNotes.length &&
+        loopBaseTime + bgmNotes[nextNoteIndex].time <= horizon
+      ) {
+        const n = bgmNotes[nextNoteIndex];
+        playBgmNote(loopBaseTime + n.time, n.dur, n.midi);
+        nextNoteIndex++;
+      }
+
+      if (nextNoteIndex >= bgmNotes.length) {
+        const loopEndTime = loopBaseTime + bgmLoopDurationSec + BGM_LOOP_GAP_SEC;
+        if (loopEndTime <= horizon) {
+          loopBaseTime = loopEndTime;
+          nextNoteIndex = 0;
+        }
+      }
+    }
+
+    function startBgmScheduler() {
+      if (schedulerTimer) return;
+      loopBaseTime = audioCtx.currentTime + 0.15;
+      nextNoteIndex = 0;
+      schedulerTick();
+      schedulerTimer = setInterval(schedulerTick, SCHEDULER_INTERVAL_MS);
     }
 
     function ensureBgmStarted() {
       if (bgmStarted) return;
       bgmStarted = true;
 
-      if (!bgmNotes) loadBgmFromMidi();
+      try {
+        if (!bgmNotes) loadBgmFromMidi();
 
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      audioCtx = new AudioContextClass();
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContextClass();
 
-      // iOSのSafariはユーザー操作の直後にresume()を呼ばないと
-      // AudioContextが"suspended"のままになり、音が出ないことがある
-      if (audioCtx.state === "suspended") {
-        audioCtx.resume();
+        // iOSのSafariはユーザー操作の直後にresume()を呼ばないと
+        // AudioContextが"suspended"のままになり、音が出ないことがある
+        if (audioCtx.state === "suspended") {
+          audioCtx.resume();
+        }
+
+        // 無音バッファを一度再生してオーディオ経路を確実に開放する（iOS対策）
+        const unlockBuffer = audioCtx.createBuffer(1, 1, 22050);
+        const unlockSource = audioCtx.createBufferSource();
+        unlockSource.buffer = unlockBuffer;
+        unlockSource.connect(audioCtx.destination);
+        unlockSource.start(0);
+
+        const compressor = audioCtx.createDynamicsCompressor();
+        compressor.threshold.value = -24;
+        compressor.knee.value = 24;
+        compressor.ratio.value = 8;
+        compressor.attack.value = 0.003;
+        compressor.release.value = 0.25;
+        compressor.connect(audioCtx.destination);
+        compressorNode = compressor;
+
+        masterGain = audioCtx.createGain();
+        masterGain.gain.value = bgmMuted ? 0 : BGM_VOLUME;
+        masterGain.connect(compressor);
+
+        startBgmScheduler();
+      } catch (err) {
+        // 失敗しても無音のまま固まらないよう、次のタップで再試行できるようにする
+        console.error("BGM init failed:", err);
+        bgmStarted = false;
       }
-
-      // 無音バッファを一度再生してオーディオ経路を確実に開放する（iOS対策）
-      const unlockBuffer = audioCtx.createBuffer(1, 1, 22050);
-      const unlockSource = audioCtx.createBufferSource();
-      unlockSource.buffer = unlockBuffer;
-      unlockSource.connect(audioCtx.destination);
-      unlockSource.start(0);
-
-      const compressor = audioCtx.createDynamicsCompressor();
-      compressor.threshold.value = -24;
-      compressor.knee.value = 24;
-      compressor.ratio.value = 8;
-      compressor.attack.value = 0.003;
-      compressor.release.value = 0.25;
-      compressor.connect(audioCtx.destination);
-      compressorNode = compressor;
-
-      masterGain = audioCtx.createGain();
-      masterGain.gain.value = bgmMuted ? 0 : BGM_VOLUME;
-      masterGain.connect(compressor);
-
-      scheduleBgmLoop(audioCtx.currentTime + 0.15);
     }
 
     function resumeAudioIfNeeded() {

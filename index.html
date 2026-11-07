@@ -2,9 +2,15 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>かけ算練習アプリ</title>
   <style>
+    /* 画面サイズに合わせた拡大縮小は JS(fitToScreen) がカード全体に scale をかける。
+       カード内は常に基準サイズ(仮想画面幅 316px)で組むため、vw の代わりにこの固定単位を使う */
+    :root {
+      --vw: 3.16px;
+    }
+
     body {
       margin: 0;
       font-family: Arial, Helvetica, sans-serif;
@@ -18,25 +24,24 @@
       align-items: center;
       height: 100dvh;
       box-sizing: border-box;
-      padding: 10px;
+      padding: max(10px, env(safe-area-inset-top)) max(10px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(10px, env(safe-area-inset-left));
       overflow: hidden;
     }
 
     .app {
-      width: min(92vw, 460px);
+      width: calc(92 * var(--vw));
+      flex: none;
       background-color: #ffffff;
       background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22200%22%20height%3D%22200%22%3E%0A%20%20%3Ccircle%20cx%3D%2228%22%20cy%3D%2234%22%20r%3D%2213%22%20fill%3D%22%23ffcf7a%22%20opacity%3D%220.55%22/%3E%0A%20%20%3Ccircle%20cx%3D%22165%22%20cy%3D%2255%22%20r%3D%2210%22%20fill%3D%22%238fc4ff%22%20opacity%3D%220.5%22/%3E%0A%20%20%3Ccircle%20cx%3D%2255%22%20cy%3D%22135%22%20r%3D%229%22%20fill%3D%22%23ffa9d1%22%20opacity%3D%220.5%22/%3E%0A%20%20%3Ccircle%20cx%3D%22135%22%20cy%3D%22165%22%20r%3D%2212%22%20fill%3D%22%238fe08f%22%20opacity%3D%220.5%22/%3E%0A%20%20%3Ctext%20x%3D%22118%22%20y%3D%2242%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2226%22%20font-weight%3D%22bold%22%20fill%3D%22%23ff9d1e%22%20opacity%3D%220.55%22%3Ex%3C/text%3E%0A%20%20%3Ctext%20x%3D%2214%22%20y%3D%22105%22%20font-family%3D%22Arial%2C%20sans-serif%22%20font-size%3D%2222%22%20font-weight%3D%22bold%22%20fill%3D%22%235b8fff%22%20opacity%3D%220.5%22%3Ex%3C/text%3E%0A%20%20%3Cpath%20d%3D%22M95%208%20L99%2018%20L110%2019%20L101%2026%20L104%2037%20L95%2030.5%20L86%2037%20L89%2026%20L80%2019%20L91%2018%20Z%22%20fill%3D%22%23ffd85c%22%20opacity%3D%220.6%22/%3E%0A%20%20%3Cpath%20d%3D%22M170%20118%20L173%20125%20L182%20126%20L175%20131%20L177%20140%20L170%20135%20L163%20140%20L165%20131%20L158%20126%20L167%20125%20Z%22%20fill%3D%22%23ff8fc0%22%20opacity%3D%220.55%22/%3E%0A%20%20%3Cellipse%20cx%3D%2238%22%20cy%3D%22176%22%20rx%3D%2219%22%20ry%3D%229%22%20fill%3D%22%23bfe3ff%22%20opacity%3D%220.6%22/%3E%0A%20%20%3Cellipse%20cx%3D%2252%22%20cy%3D%22169%22%20rx%3D%2213%22%20ry%3D%228%22%20fill%3D%22%23bfe3ff%22%20opacity%3D%220.6%22/%3E%0A%3C/svg%3E");
       background-repeat: repeat;
       background-size: 170px 170px;
       border-radius: 20px;
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-      padding: clamp(14px, 4vw, 24px) clamp(14px, 4vw, 24px) clamp(18px, 5vw, 30px);
+      padding: clamp(14px, calc(4 * var(--vw)), 24px) clamp(14px, calc(4 * var(--vw)), 24px) clamp(18px, calc(5 * var(--vw)), 30px);
       text-align: center;
       border: 4px solid #ffd36e;
       transition: background-color 0.4s ease-out;
       position: relative;
-      max-height: calc(100dvh - 20px);
-      overflow-y: auto;
       box-sizing: border-box;
     }
 
@@ -102,29 +107,29 @@
     }
 
     h1 {
-      margin: 56px 0 clamp(6px, 2vw, 12px);
-      font-size: clamp(20px, 5.5vw, 28px);
+      margin: 56px 0 clamp(6px, calc(2 * var(--vw)), 12px);
+      font-size: clamp(20px, calc(5.5 * var(--vw)), 28px);
       color: #ff8a00;
     }
 
     .level-area {
-      margin-bottom: clamp(8px, 2.5vw, 16px);
+      margin-bottom: clamp(8px, calc(2.5 * var(--vw)), 16px);
       text-align: left;
     }
 
     .level-area label {
       display: block;
-      font-size: clamp(13px, 3.5vw, 16px);
+      font-size: clamp(13px, calc(3.5 * var(--vw)), 16px);
       font-weight: bold;
-      margin-bottom: clamp(4px, 1.5vw, 8px);
+      margin-bottom: clamp(4px, calc(1.5 * var(--vw)), 8px);
       color: #444;
     }
 
     select {
       width: 100%;
       box-sizing: border-box;
-      font-size: clamp(14px, 4vw, 18px);
-      padding: clamp(8px, 2.5vw, 12px);
+      font-size: clamp(14px, calc(4 * var(--vw)), 18px);
+      padding: clamp(8px, calc(2.5 * var(--vw)), 12px);
       border: 3px solid #cfd8ff;
       border-radius: 14px;
       outline: none;
@@ -132,16 +137,16 @@
     }
 
     .score {
-      font-size: clamp(14px, 4vw, 18px);
-      margin-bottom: clamp(8px, 2.5vw, 16px);
+      font-size: clamp(14px, calc(4 * var(--vw)), 18px);
+      margin-bottom: clamp(8px, calc(2.5 * var(--vw)), 16px);
       color: #444;
       font-weight: bold;
     }
 
     .problem {
-      font-size: clamp(39px, 12vw, 66px);
+      font-size: clamp(39px, calc(12 * var(--vw)), 66px);
       font-weight: bold;
-      margin: clamp(8px, 3vw, 18px) 0 clamp(10px, 3.5vw, 24px);
+      margin: clamp(8px, calc(3 * var(--vw)), 18px) 0 clamp(10px, calc(3.5 * var(--vw)), 24px);
       color: #2b4eff;
       letter-spacing: 1px;
     }
@@ -149,8 +154,8 @@
     input {
       width: 100%;
       box-sizing: border-box;
-      font-size: clamp(18px, 5vw, 24px);
-      padding: clamp(8px, 3vw, 14px);
+      font-size: clamp(18px, calc(5 * var(--vw)), 24px);
+      padding: clamp(8px, calc(3 * var(--vw)), 14px);
       border: 3px solid #cfd8ff;
       border-radius: 14px;
       outline: none;
@@ -164,7 +169,7 @@
     .answer-row {
       display: flex;
       justify-content: center;
-      gap: clamp(8px, 2.5vw, 12px);
+      gap: clamp(8px, calc(2.5 * var(--vw)), 12px);
       align-items: stretch;
     }
 
@@ -204,8 +209,8 @@
     .message-row {
       display: flex;
       align-items: center;
-      gap: clamp(8px, 2.5vw, 12px);
-      margin-top: clamp(8px, 2.5vw, 16px);
+      gap: clamp(8px, calc(2.5 * var(--vw)), 12px);
+      margin-top: clamp(8px, calc(2.5 * var(--vw)), 16px);
     }
 
     .message-row .message {
@@ -217,14 +222,14 @@
     .keypad {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: clamp(6px, 2vw, 10px);
-      margin-top: clamp(8px, 2.5vw, 16px);
+      gap: clamp(6px, calc(2 * var(--vw)), 10px);
+      margin-top: clamp(8px, calc(2.5 * var(--vw)), 16px);
     }
 
     .key-btn {
       border-radius: 14px;
-      font-size: clamp(18px, 5vw, 24px);
-      padding: clamp(9px, 3vw, 16px) 0;
+      font-size: clamp(18px, calc(5 * var(--vw)), 24px);
+      padding: clamp(9px, calc(3 * var(--vw)), 16px) 0;
       cursor: pointer;
       font-weight: bold;
       background: #eef1ff;
@@ -276,8 +281,8 @@
 
     .message {
       margin-top: 20px;
-      min-height: clamp(28px, 8vw, 40px);
-      font-size: clamp(16px, 4.5vw, 22px);
+      min-height: clamp(28px, calc(8 * var(--vw)), 40px);
+      font-size: clamp(16px, calc(4.5 * var(--vw)), 22px);
       font-weight: bold;
     }
 
@@ -335,7 +340,7 @@
     }
 
     .clear-sub.full-complete-highlight {
-      font-size: clamp(18px, 5.5vw, 24px);
+      font-size: clamp(18px, calc(5.5 * var(--vw)), 24px);
       font-weight: bold;
       color: transparent;
       background: linear-gradient(90deg, #ff8a00, #ff2d78, #2b4eff);
@@ -385,7 +390,7 @@
     }
 
     .sugoroku {
-      margin: clamp(2px, 1vw, 4px) 0 clamp(8px, 2.5vw, 18px);
+      margin: clamp(2px, calc(1 * var(--vw)), 4px) 0 clamp(8px, calc(2.5 * var(--vw)), 18px);
     }
 
     .sugoroku-track {
@@ -399,12 +404,12 @@
     .sg-start,
     .sg-goal {
       flex: 0 0 auto;
-      width: clamp(22px, 6vw, 30px);
-      height: clamp(22px, 6vw, 30px);
+      width: clamp(22px, calc(6 * var(--vw)), 30px);
+      height: clamp(22px, calc(6 * var(--vw)), 30px);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(12px, 3.5vw, 16px);
+      font-size: clamp(12px, calc(3.5 * var(--vw)), 16px);
     }
 
     .sg-cell {
@@ -430,7 +435,7 @@
       position: absolute;
       top: 0;
       left: 0;
-      font-size: clamp(22px, 6.5vw, 30px);
+      font-size: clamp(22px, calc(6.5 * var(--vw)), 30px);
       transform: translate(-50%, -50%);
       transition: left 0.45s cubic-bezier(0.34, 1.56, 0.64, 1), top 0.45s ease;
       pointer-events: none;
@@ -1131,8 +1136,9 @@
       hintEl.textContent = `今のレベル: ${range.label}`;
     }
 
+    // カード全体を scale で拡大縮小するため、getBoundingClientRect ではなく
+    // 拡大縮小の影響を受けない offsetLeft/offsetTop（トラック基準）で位置を求める
     function positionPiece() {
-      const trackRect = sgTrackEl.getBoundingClientRect();
       let targetEl;
       if (boardPosition <= 0) {
         targetEl = sgStartEl;
@@ -1141,9 +1147,8 @@
       } else {
         targetEl = sgCellEls[boardPosition - 1];
       }
-      const targetRect = targetEl.getBoundingClientRect();
-      const left = targetRect.left - trackRect.left + targetRect.width / 2;
-      const top = targetRect.top - trackRect.top + targetRect.height / 2;
+      const left = targetEl.offsetLeft + targetEl.offsetWidth / 2;
+      const top = targetEl.offsetTop + targetEl.offsetHeight / 2;
       sgPieceEl.style.left = `${left}px`;
       sgPieceEl.style.top = `${top}px`;
     }
@@ -1562,6 +1567,48 @@
       sgPieceEl.style.transition = "";
     });
     makeProblem();
+
+    // ---- スマホの画面サイズに合わせた自動拡大縮小 ----
+    // カード内は常に同じ基準サイズで組み、カード全体を画面に収まる倍率で scale する。
+    const MAX_FIT_SCALE = 2;
+    let quizDesignHeight = 0;
+
+    // 問題画面の基準の高さ（結果メッセージが一番長く折り返した状態で測り、問答のたびに大きさが変わらないようにする）
+    function measureQuizHeight() {
+      if (quizArea.classList.contains("hidden")) return;
+      const savedMessage = messageEl.innerHTML;
+      const longestMessages = [
+        "時間切れ！ 答えは 81 だよ（スタートにもどるよ）",
+        `正解！ すごいね！ <span class="star">⭐</span>`,
+      ];
+      quizDesignHeight = 0;
+      longestMessages.forEach((html) => {
+        messageEl.innerHTML = html;
+        quizDesignHeight = Math.max(quizDesignHeight, appCard.offsetHeight);
+      });
+      messageEl.innerHTML = savedMessage;
+    }
+
+    // 問題画面と同じ倍率で表示し、問題画面より高い画面（レベル選択など）だけその高さに合わせて縮める
+    function fitToScreen() {
+      const bodyStyle = getComputedStyle(document.body);
+      const availW = window.innerWidth - parseFloat(bodyStyle.paddingLeft) - parseFloat(bodyStyle.paddingRight);
+      const availH = window.innerHeight - parseFloat(bodyStyle.paddingTop) - parseFloat(bodyStyle.paddingBottom);
+      const designH = Math.max(quizDesignHeight, appCard.offsetHeight);
+      const scale = Math.min(availW / appCard.offsetWidth, availH / designH, MAX_FIT_SCALE);
+      appCard.style.transform = `scale(${Math.max(scale, 0.3)})`;
+    }
+
+    function refitDesign() {
+      measureQuizHeight();
+      fitToScreen();
+    }
+
+    refitDesign();
+    window.addEventListener("load", refitDesign);
+    window.addEventListener("resize", fitToScreen);
+    window.addEventListener("orientationchange", fitToScreen);
+    new ResizeObserver(fitToScreen).observe(appCard);
   </script>
 </body>
 </html>
